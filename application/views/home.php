@@ -95,7 +95,7 @@
             </div>
 
             <hr>
-
+            <a href="<?php echo $login_url; ?>">Login</a>
             <footer>
                 <p>&copy; Company 2012</p>
             </footer><img src="" alt="" />
@@ -104,7 +104,7 @@
             {
                 // var_dump($photo);
                 echo '<a href="' . $photo->link . '">'; 
-                echo '<img src="' . $photo->images->standard_resolution->url . '" alt="" />';
+                echo '<img src="' . $photo->images->low_resolution->url . '" alt="" />';
                 echo '</a>';
             }
             var_dump($photo);
