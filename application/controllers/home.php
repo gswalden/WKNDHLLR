@@ -4,6 +4,7 @@ class Home extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('home');
+		$data['media'] = $this->instagram_api->getPopularMedia();
+		$this->load->view('home', $data);
 	}
 }

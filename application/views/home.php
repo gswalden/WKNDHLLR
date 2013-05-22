@@ -98,8 +98,17 @@
 
             <footer>
                 <p>&copy; Company 2012</p>
-            </footer>
-
+            </footer><img src="" alt="" />
+            <?php 
+            foreach ($media->data as $photo) 
+            {
+                // var_dump($photo);
+                echo '<a href="' . $photo->link . '">'; 
+                echo '<img src="' . $photo->images->standard_resolution->url . '" alt="" />';
+                echo '</a>';
+            }
+            var_dump($photo);
+             ?>
         </div> <!-- /container -->
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
