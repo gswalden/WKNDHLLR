@@ -95,7 +95,7 @@
             </div>
 
             <hr>
-            <a href="<?php echo $login_url; ?>">Log In Using Instragram</a>
+            <a href="<?php echo $login_url; ?>">Log In Using Instagram</a>
             <footer>
                 <p>&copy; Company 2012</p>
             </footer><img src="" alt="" />
