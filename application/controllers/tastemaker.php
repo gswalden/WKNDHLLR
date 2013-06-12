@@ -67,26 +67,10 @@ class Tastemaker extends CI_Controller {
 
 	public function add($id)
 	{
-		// check for photo in database; if not found, add it
-		$query = $this->db->get_where('photos', array('id' => $id));
-		if ($query->num_rows == 0)
-		{
-			$response = $this->instagram_api->getMedia($id);
-			if ($response->meta->code == 200)
-			{
-				$photo = array(
-					'id' => $response->data->id,
-					'username' => $response->data->user->username,
-					'user_id' => $response->data->user->id,
-					'low_resolution' => $response->data->images->low_resolution->url,
-					'thumbnail' => $response->data->images->thumbnail->url,
-					'standard_resolution' => $response->data->images->standard_resolution->url,
-					'url' => $response->data->link,
-					'added_by' => '387621951'
-					);
-				$this->db->insert('photos', $photo);
-			}	
-		}
+		$this->load->model('Photo_model');
+		$this->Photo_model->add_photo($id);
+
+		
 		
 		redirect('/tastemaker');
 	}

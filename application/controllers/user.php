@@ -13,7 +13,7 @@ class User extends CI_Controller {
 		
 		if ( ! empty($get))
 		{
-			$auth_response = $this->instagram_api->authorize($_GET['code']);
+			$auth_response = $this->instagram_api->authorize($code);
 			
 			// Set up session variables containing some useful Instagram data
 			$this->session->set_userdata('instagram-token', $auth_response->access_token);
@@ -23,7 +23,12 @@ class User extends CI_Controller {
 			$this->session->set_userdata('instagram-full-name', $auth_response->user->full_name);
 			unset($auth_response->user->bio,$auth_response->user->website);
 			$auth_response->user->access_token = $auth_response->access_token;
-			$this->db->insert('users', $auth_response->user);
+			
+			$this->load->model('User_model');
+			if ($this->User_model->add($auth_response->user))
+				$this->session->set_flashdata('login', 'Log In Successful!');
+			else
+				$this->session->set_flashdata('login', 'Log In Denied!');
 
 			redirect('/');
 		}
