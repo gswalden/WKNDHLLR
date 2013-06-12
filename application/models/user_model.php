@@ -23,4 +23,31 @@ class User_model extends CI_Model {
 	{
 		return $this->db->get_where('users', ['id' => $id]);
 	}
+
+	public function get_users($access_level = NULL, $include_higher = TRUE) 
+	{
+		if (isset($access_level))
+		{
+			if ($include_higher)
+				$this->db->where('access_level >=', $access_level);
+			else
+				$this->db->where('access_level', $access_level);	
+		}
+		
+		return $this->db->get('users');
+	}
+
+	public function delete_user($id)
+	{
+		if ($this->db->delete('users', ['id' => $id]))
+			return TRUE;
+		return FALSE;
+	}
+
+	public function update_user($id, $data)
+	{
+		if ($this->db->update('users', $data, ['id' => $id]))
+			return TRUE;
+		return FALSE;
+	}
 }

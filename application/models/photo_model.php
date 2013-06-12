@@ -5,14 +5,14 @@ class Photo_model extends CI_Model {
 	public function add_photo($id)
 	{
 		// check for photo in database; if not found, add it
-		$query = $this->db->get_where('photos', array('id' => $id));
+		$query = $this->db->get_where('photos', ['id' => $id]);
 		if ($query->num_rows == 0)
 		{
 			$response = $this->instagram_api->getMedia($id);
 
 			if ($response->meta->code == 200)
 			{
-				$photo = array(
+				$photo = [
 					'id' => $response->data->id,
 					'username' => $response->data->user->username,
 					'user_id' => $response->data->user->id,
@@ -21,7 +21,7 @@ class Photo_model extends CI_Model {
 					'standard_resolution' => $response->data->images->standard_resolution->url,
 					'url' => $response->data->link,
 					'added_by' => '387621951'
-					);
+					];
 
 				// inserts data and returns result
 				if ($this->db->insert('photos', $photo))
@@ -38,5 +38,25 @@ class Photo_model extends CI_Model {
 		}
 
 		return ['bool' => FALSE, 'message' => 'Photo already exists!'];
+	}
+
+	public function get_photo($id)
+	{
+		return $this->db->get_where('photos', ['id' => $id]);
+	}
+
+	public function get_photos($limit = 30, $before_date = NULL)
+	{
+		if (isset($before_id))
+			$this->db->where('date_added <', $before_date);
+		$this->db->order_by('date_added', 'desc');
+		return get('photos', $limit);
+	}
+
+	public function delete_photo($id)
+	{
+		if ($this->db->delete('photos', ['id' => $id]))
+			return TRUE;
+		return FALSE;
 	}	
 }

@@ -21,11 +21,13 @@ class User extends CI_Controller {
 			$this->session->set_userdata('instagram-profile-picture', $auth_response->user->profile_picture);
 			$this->session->set_userdata('instagram-user-id', $auth_response->user->id);
 			$this->session->set_userdata('instagram-full-name', $auth_response->user->full_name);
-			unset($auth_response->user->bio,$auth_response->user->website);
+			$this->session->set_userdata('instagram-logged-in', TRUE);
+			unset($auth_response->user->bio, $auth_response->user->website);
 			$auth_response->user->access_token = $auth_response->access_token;
 			
 			$this->load->model('User_model');
-			if ($this->User_model->add($auth_response->user))
+			$add = $this->User_model->add($auth_response->user);
+			if ($add['bool'])
 				$this->session->set_flashdata('login', 'Log In Successful!');
 			else
 				$this->session->set_flashdata('login', 'Log In Denied!');
@@ -34,6 +36,5 @@ class User extends CI_Controller {
 		}
 		else
 			redirect('/');
-
 	}
 }

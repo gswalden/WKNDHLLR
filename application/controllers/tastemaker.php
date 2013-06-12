@@ -2,17 +2,22 @@
 
 class Tastemaker extends CI_Controller {
 
-	protected $tags = array('rave',
-							'vip',
-							'partybus',
-							'trap');
+	protected $tags;
+
+	public function __construct()
+	{
+        parent::__construct();
+
+		$this->tags =[	
+					'rave',
+					'vip',
+					'partybus',
+					'trap'
+					];
+	}
 
 	public function index()
 	{
-		$tags = array('rave',
-							'vip',
-							'partybus',
-							'trap');
 		// Check if user is an admin
 		//if ($this->session->userdata('access_level') < 2)
 		//	redirect('/');
