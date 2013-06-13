@@ -37,4 +37,9 @@ class User extends CI_Controller {
 		else
 			redirect('/');
 	}
+
+	public function logout()
+	{
+		$this->session->sess_destroy();
+	}
 }

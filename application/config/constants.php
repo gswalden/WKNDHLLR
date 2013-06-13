@@ -36,6 +36,19 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+/*
+|--------------------------------------------------------------------------
+| Custom Constants
+|--------------------------------------------------------------------------
+|
+| These modes are used when working with fopen()/popen()
+|
+*/
+
+define('GUEST',		0);
+define('USER',		1);
+define('ADMIN',		2);
+define('SUPERADMIN',3);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
