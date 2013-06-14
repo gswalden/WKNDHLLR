@@ -60,7 +60,8 @@ class Instagram_api {
         'tags_search'				=> 'https://api.instagram.com/v1/tags/search?q=%s&access_token=%s',
         'locations'					=> 'https://api.instagram.com/v1/locations/%d?access_token=%s',
         'locations_recent'			=> 'https://api.instagram.com/v1/locations/%d/media/recent/?max_id=%s&min_id=%s&max_timestamp=%s&min_timestamp=%s&access_token=%s',
-        'locations_search'			=> 'https://api.instagram.com/v1/locations/search?lat=%s&lng=%s&foursquare_id=%s&distance=%s&access_token=%s'
+        'locations_search'			=> 'https://api.instagram.com/v1/locations/search?lat=%s&lng=%s&foursquare_id=%s&distance=%s&access_token=%s',
+        'get_media_by_url'          => 'https://api.instagram.com/oembed?url=%s'
     );
     
     /*
@@ -504,6 +505,20 @@ class Instagram_api {
     	
     	return $this->__apiCall($location_search_request_url);
     
+    }
+
+    /*
+     * Function to get media information from Instagram URL
+     * @param string Instagram URL 
+     * @return std_class data about the media item
+     */
+    function getMediaByURL($url) {
+    
+        $get_media_by_url_request_url = sprintf($this->api_urls['get_media_by_url'], $url);
+        
+        $media = $this->__apiCall($get_media_by_url_request_url);
+        
+        return $this->getMedia($media->media_id);
     }
 
 }

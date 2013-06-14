@@ -41,7 +41,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 | Custom Constants
 |--------------------------------------------------------------------------
 |
-| These modes are used when working with fopen()/popen()
+| Define user access levels to eliminate magic numbers
 |
 */
 

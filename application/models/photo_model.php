@@ -12,16 +12,7 @@ class Photo_model extends CI_Model {
 
 			if ($response->meta->code == 200)
 			{
-				$photo = [
-					'id' => $response->data->id,
-					'username' => $response->data->user->username,
-					'user_id' => $response->data->user->id,
-					'low_resolution' => $response->data->images->low_resolution->url,
-					'thumbnail' => $response->data->images->thumbnail->url,
-					'standard_resolution' => $response->data->images->standard_resolution->url,
-					'url' => $response->data->link,
-					'added_by' => '387621951'
-					];
+				$photo = $this->_make_photo_array($response);
 
 				// inserts data and returns result
 				if ($this->db->insert('photos', $photo))
@@ -40,6 +31,17 @@ class Photo_model extends CI_Model {
 		return ['bool' => FALSE, 'message' => 'Photo already exists!'];
 	}
 
+	public function add_suggested_photo($photo)
+	{
+		$photo = _make_photo_array($photo);
+
+		// inserts data and returns result
+		if ($this->db->insert('suggested_photos', $photo))
+			return ['bool' => TRUE, 'message' => 'Photo successfully suggested!'];
+		
+		return ['bool' => FALSE, 'message' => 'Database error in' . __METHOD__ . ': Number: ' . $this->db->_error_number() . '; Message: ' . $this->db->_error_message()];
+	}
+
 	public function get_photo($id)
 	{
 		return $this->db->get_where('photos', ['id' => $id]);
@@ -50,7 +52,7 @@ class Photo_model extends CI_Model {
 		if (isset($before_id))
 			$this->db->where('date_added <', $before_date);
 		$this->db->order_by('date_added', 'desc');
-		return get('photos', $limit);
+		return $this->db->get('photos', $limit);
 	}
 
 	public function delete_photo($id)
@@ -58,5 +60,18 @@ class Photo_model extends CI_Model {
 		if ($this->db->delete('photos', ['id' => $id]))
 			return TRUE;
 		return FALSE;
+	}
+
+	protected function _make_photo_array($photo)
+	{
+		return ['id' => $photo->data->id,
+				'username' => $photo->data->user->username,
+				'user_id' => $photo->data->user->id,
+				'low_resolution' => $photo->data->images->low_resolution->url,
+				'thumbnail' => $photo->data->images->thumbnail->url,
+				'standard_resolution' => $photo->data->images->standard_resolution->url,
+				'url' => $photo->data->link,
+				'added_by' => '387621951'
+				];
 	}	
 }
