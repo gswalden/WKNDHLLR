@@ -7,7 +7,8 @@ Find and display the most fun, jealousy-inducing Instagram photos to remind us w
 ## Libraries
 * [CodeIgniter](http://ellislab.com/codeigniter)
 * [CodeIgniter Instagram Library](https://github.com/ianckc/CodeIgniter-Instagram-Library)
-* [CodeIgniter REST Server](https://github.com/philsturgeon/codeigniter-restserver) 
+* [CodeIgniter REST Server](https://github.com/philsturgeon/codeigniter-restserver)
+* [Bootstrap](http://twitter.github.io/bootstrap/) 
 
 ## License
 This program is free software: you can redistribute it and/or modify
