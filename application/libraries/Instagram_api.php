@@ -1,7 +1,7 @@
 <?php
 
 /**
- * CodeIgniter Instagram Library by Ian Luckraft	http://ianluckraft.co.uk	ian@ianluckraft.co.uk
+ * CodeIgniter Instagram Library by Ian Luckraft    http://ianluckraft.co.uk    ian@ianluckraft.co.uk
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -26,42 +26,42 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Instagram_api {
 
-	/*
-	 * Variable to hold an insatance of CodeIgniter so we can access CodeIgniter features
-	 */
-	protected $codeigniter_instance;
+    /*
+     * Variable to hold an insatance of CodeIgniter so we can access CodeIgniter features
+     */
+    protected $codeigniter_instance;
 
-	/*
-	 * Create an array of the urls to be used in api calls
-	 * The urls contain conversion specifications that will be replaced by sprintf in the functions
-	 * @var string
-	 */
+    /*
+     * Create an array of the urls to be used in api calls
+     * The urls contain conversion specifications that will be replaced by sprintf in the functions
+     * @var string
+     */
     protected $api_urls = array(
-    	'user'						=> 'https://api.instagram.com/v1/users/%s/?access_token=%s',
-        'user_feed'					=> 'https://api.instagram.com/v1/users/self/feed?access_token=%s&max_id=%s&min_id=%s',
-        'user_recent'				=> 'https://api.instagram.com/v1/users/%s/media/recent/?access_token=%s&count=%s&max_id=%s&min_id=%s&max_timestamp=%s&min_timestamp=%s',
-        'user_search'				=> 'https://api.instagram.com/v1/users/search?q=%s&access_token=%s',
-        'user_follows'				=> 'https://api.instagram.com/v1/users/%s/follows?access_token=%s',
-        'user_followed_by'			=> 'https://api.instagram.com/v1/users/%s/followed-by?access_token=%s',
-        'user_requested_by'			=> 'https://api.instagram.com/v1/users/self/requested-by?access_token=%s',
-        'user_relationship'			=> 'https://api.instagram.com/v1/users/%s/relationship?access_token=%s',
-        'modify_user_relationship'	=> 'https://api.instagram.com/v1/users/%s/relationship?access_token=%s',
-        'media'						=> 'https://api.instagram.com/v1/media/%s?access_token=%s',
-        'media_search'				=> 'https://api.instagram.com/v1/media/search?lat=%s&lng=%s&max_timestamp=%s&min_timestamp=%s&distance=%s&access_token=%s',
-        'media_popular'				=> 'https://api.instagram.com/v1/media/popular?access_token=%s',
-        'media_comments'			=> 'https://api.instagram.com/v1/media/%s/comments?access_token=%s',
-        'post_media_comment'		=> 'https://api.instagram.com/v1/media/%s/comments?access_token=%s',
-        'delete_media_comment'		=> 'https://api.instagram.com/v1/media/%s/comments?comment_id=%s&access_token=%s',
-        'likes'						=> 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
-    	'post_like'					=> 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
-        'remove_like'				=> 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
-        'tags'						=> 'https://api.instagram.com/v1/tags/%s?access_token=%s',
-        'tags_recent'				=> 'https://api.instagram.com/v1/tags/%s/media/recent?max_id=%s&min_id=%s&access_token=%s',
-        'tags_search'				=> 'https://api.instagram.com/v1/tags/search?q=%s&access_token=%s',
-        'locations'					=> 'https://api.instagram.com/v1/locations/%d?access_token=%s',
-        'locations_recent'			=> 'https://api.instagram.com/v1/locations/%d/media/recent/?max_id=%s&min_id=%s&max_timestamp=%s&min_timestamp=%s&access_token=%s',
-        'locations_search'			=> 'https://api.instagram.com/v1/locations/search?lat=%s&lng=%s&foursquare_id=%s&distance=%s&access_token=%s',
-        'get_media_by_url'          => 'https://api.instagram.com/oembed?url=%s'
+        'user'                      => 'https://api.instagram.com/v1/users/%s/?access_token=%s',
+        'user_feed'                 => 'https://api.instagram.com/v1/users/self/feed?access_token=%s&max_id=%s&min_id=%s',
+        'user_recent'               => 'https://api.instagram.com/v1/users/%s/media/recent/?access_token=%s&count=%s&max_id=%s&min_id=%s&max_timestamp=%s&min_timestamp=%s',
+        'user_search'               => 'https://api.instagram.com/v1/users/search?q=%s&access_token=%s',
+        'user_follows'              => 'https://api.instagram.com/v1/users/%s/follows?access_token=%s',
+        'user_followed_by'          => 'https://api.instagram.com/v1/users/%s/followed-by?access_token=%s',
+        'user_requested_by'         => 'https://api.instagram.com/v1/users/self/requested-by?access_token=%s',
+        'user_relationship'         => 'https://api.instagram.com/v1/users/%s/relationship?access_token=%s',
+        'modify_user_relationship'  => 'https://api.instagram.com/v1/users/%s/relationship?access_token=%s',
+        'media'                     => 'https://api.instagram.com/v1/media/%s?access_token=%s',
+        'media_search'              => 'https://api.instagram.com/v1/media/search?lat=%s&lng=%s&max_timestamp=%s&min_timestamp=%s&distance=%s&access_token=%s',
+        'media_popular'             => 'https://api.instagram.com/v1/media/popular?access_token=%s',
+        'media_comments'            => 'https://api.instagram.com/v1/media/%s/comments?access_token=%s',
+        'post_media_comment'        => 'https://api.instagram.com/v1/media/%s/comments?access_token=%s',
+        'delete_media_comment'      => 'https://api.instagram.com/v1/media/%s/comments?comment_id=%s&access_token=%s',
+        'likes'                     => 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
+        'post_like'                 => 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
+        'remove_like'               => 'https://api.instagram.com/v1/media/%s/likes?access_token=%s',
+        'tags'                      => 'https://api.instagram.com/v1/tags/%s?access_token=%s',
+        'tags_recent'               => 'https://api.instagram.com/v1/tags/%s/media/recent?max_id=%s&min_id=%s&access_token=%s',
+        'tags_search'               => 'https://api.instagram.com/v1/tags/search?q=%s&access_token=%s',
+        'locations'                 => 'https://api.instagram.com/v1/locations/%d?access_token=%s',
+        'locations_recent'          => 'https://api.instagram.com/v1/locations/%d/media/recent/?max_id=%s&min_id=%s&max_timestamp=%s&min_timestamp=%s&access_token=%s',
+        'locations_search'          => 'https://api.instagram.com/v1/locations/search?lat=%s&lng=%s&foursquare_id=%s&distance=%s&access_token=%s',
+        'media_by_url'              => 'https://api.instagram.com/oembed?url=%s'
     );
     
     /*
@@ -70,11 +70,11 @@ class Instagram_api {
      */
     function __construct() {
     
-    	// Set the CodeIgniter instance variable
-    	$this->codeigniter_instance =& get_instance();
-    	
-    	// Load the Instagram API language file
-    	$this->codeigniter_instance->load->config('Instagram_api');
+        // Set the CodeIgniter instance variable
+        $this->codeigniter_instance =& get_instance();
+        
+        // Load the Instagram API language file
+        $this->codeigniter_instance->load->config('Instagram_api');
 
         // Set access token during development
         $this->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
@@ -93,7 +93,7 @@ class Instagram_api {
      */
     function instagramLogin() {
     
-    	return 'https://api.instagram.com/oauth/authorize/?client_id=' . $this->codeigniter_instance->config->item('instagram_client_id') . '&redirect_uri=' . $this->codeigniter_instance->config->item('instagram_callback_url') . '&response_type=code';
+        return 'https://api.instagram.com/oauth/authorize/?client_id=' . $this->codeigniter_instance->config->item('instagram_client_id') . '&redirect_uri=' . $this->codeigniter_instance->config->item('instagram_callback_url') . '&response_type=code';
     
     }
     
@@ -107,33 +107,33 @@ class Instagram_api {
      */
     function __apiCall($url, $post_parameters = FALSE) {
     
-    	// Initialize the cURL session
-	    $curl_session = curl_init();
-	    	
-	    // Set the URL of api call
-		curl_setopt($curl_session, CURLOPT_URL, $url);
-		    
-		// If there are post fields add them to the call
-		if($post_parameters !== FALSE) {
-			curl_setopt ($curl_session, CURLOPT_POSTFIELDS, $post_parameters);
-		}
-		    
-		// Return the curl results to a variable
-	    curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, 1);
-	    
-	    // There was issues with some servers not being able to retrieve the data through https
-	    // The config variable is set to TRUE by default. If you have this problem set the config variable to FALSE
-	    // See https://github.com/ianckc/CodeIgniter-Instagram-Library/issues/5 for a discussion on this
-	    curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, $this->codeigniter_instance->config->item('instagram_ssl_verify'));
-		    
-	    // Execute the cURL session
-	    $contents = curl_exec ($curl_session);
-		    
-		// Close cURL session
-		curl_close ($curl_session);
-		    
-		// Return the response
-		return json_decode($contents);
+        // Initialize the cURL session
+        $curl_session = curl_init();
+            
+        // Set the URL of api call
+        curl_setopt($curl_session, CURLOPT_URL, $url);
+            
+        // If there are post fields add them to the call
+        if($post_parameters !== FALSE) {
+            curl_setopt ($curl_session, CURLOPT_POSTFIELDS, $post_parameters);
+        }
+            
+        // Return the curl results to a variable
+        curl_setopt($curl_session, CURLOPT_RETURNTRANSFER, 1);
+        
+        // There was issues with some servers not being able to retrieve the data through https
+        // The config variable is set to TRUE by default. If you have this problem set the config variable to FALSE
+        // See https://github.com/ianckc/CodeIgniter-Instagram-Library/issues/5 for a discussion on this
+        curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, $this->codeigniter_instance->config->item('instagram_ssl_verify'));
+            
+        // Execute the cURL session
+        $contents = curl_exec ($curl_session);
+            
+        // Close cURL session
+        curl_close ($curl_session);
+            
+        // Return the response
+        return json_decode($contents);
     
     }
     
@@ -143,14 +143,14 @@ class Instagram_api {
      * @param string code generated by Instagram when the user has been sent to our redirect url
      * @return std_class Instagram OAuth data
      */
-	function authorize($code)
-	{
-	
-		$authorization_url = 'https://api.instagram.com/oauth/access_token';
-		
-		return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);		
-		
-	}
+    function authorize($code)
+    {
+    
+        $authorization_url = 'https://api.instagram.com/oauth/access_token';
+        
+        return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);      
+        
+    }
     
     /*
      * Get a list of what media is most popular at the moment
@@ -160,9 +160,9 @@ class Instagram_api {
     function getPopularMedia()
     {
         
-    	$popular_media_request_url = 'https://api.instagram.com/v1/media/popular?client_id=' . $this->codeigniter_instance->config->item('instagram_client_id');
-    	
-    	return $this->__apiCall($popular_media_request_url);
+        $popular_media_request_url = 'https://api.instagram.com/v1/media/popular?client_id=' . $this->codeigniter_instance->config->item('instagram_client_id');
+        
+        return $this->__apiCall($popular_media_request_url);
         
     }
     
@@ -173,11 +173,11 @@ class Instagram_api {
      * @return std_class data about the Instagram user
      */
     function getUser($user_id) {
-    	
-    	$user_request_url = sprintf($this->api_urls['user'], $user_id, $this->access_token);
-    	
-    	return $this->__apiCall($user_request_url);
-    	
+        
+        $user_request_url = sprintf($this->api_urls['user'], $user_id, $this->access_token);
+        
+        return $this->__apiCall($user_request_url);
+        
     }
     
     /*
@@ -188,11 +188,11 @@ class Instagram_api {
      * @return std_class of user's feed
      */
     function getUserFeed($max = null, $min = null) {
-    	
-    	$user_feed_request_url = sprintf($this->api_urls['user_feed'], $this->access_token, $max, $min);
-    	
-    	return $this->__apiCall($user_feed_request_url);
-    	
+        
+        $user_feed_request_url = sprintf($this->api_urls['user_feed'], $this->access_token, $max, $min);
+        
+        return $this->__apiCall($user_feed_request_url);
+        
     }
     
     /*
@@ -207,11 +207,11 @@ class Instagram_api {
      * @return std_class of media found based on parameters given
      */
     function getUserRecent($user_id, $max_id = null, $min_id = null, $max_timestamp = null, $min_timestamp = null, $count = null) {
-    	
-    	$user_recent_request_url = sprintf($this->api_urls['user_recent'], $user_id, $this->access_token, $count, $max_id, $min_id, $max_timestamp, $min_timestamp);
-    	
-    	return $this->__apiCall($user_recent_request_url);
-    	
+        
+        $user_recent_request_url = sprintf($this->api_urls['user_recent'], $user_id, $this->access_token, $count, $max_id, $min_id, $max_timestamp, $min_timestamp);
+        
+        return $this->__apiCall($user_recent_request_url);
+        
     }
     
     /*
@@ -221,11 +221,11 @@ class Instagram_api {
      * @return std_class user data
      */
     function userSearch($user_name) {
-    	
-    	$user_search_request_url = sprintf($this->api_urls['user_search'], $user_name, $this->access_token);
-    	
-    	return $this->__apiCall($user_search_request_url);
-    	
+        
+        $user_search_request_url = sprintf($this->api_urls['user_search'], $user_name, $this->access_token);
+        
+        return $this->__apiCall($user_search_request_url);
+        
     }
     
     /*
@@ -235,11 +235,11 @@ class Instagram_api {
      * @return std_class user's recent feed items
      */
     function userFollows($user_id) {
-    	
-    	$user_follows_request_url = sprintf($this->api_urls['user_follows'], $user_id, $this->access_token);
-    	
-    	return $this->__apiCall($user_follows_request_url);
-    	
+        
+        $user_follows_request_url = sprintf($this->api_urls['user_follows'], $user_id, $this->access_token);
+        
+        return $this->__apiCall($user_follows_request_url);
+        
     }
     
     /*
@@ -249,11 +249,11 @@ class Instagram_api {
      * @return std_class other users that follow the one passed in
      */
     function userFollowedBy($user_id) {
-    	
-    	$user_followed_by_request_url = sprintf($this->api_urls['user_followed_by'], $user_id, $this->access_token);
-    	
-    	return $this->__apiCall($user_followed_by_request_url);
-    	
+        
+        $user_followed_by_request_url = sprintf($this->api_urls['user_followed_by'], $user_id, $this->access_token);
+        
+        return $this->__apiCall($user_followed_by_request_url);
+        
     }
     
     /*
@@ -262,11 +262,11 @@ class Instagram_api {
      * @return std_class users who have requested this user's permission to follow
      */
     function userRequestedBy() {
-    	
-    	$user_requested_by_request_url = sprintf($this->api_urls['user_requested_by'], $this->access_token);
-    	
-    	return $this->__apiCall($user_requested_by_request_url);
-    	
+        
+        $user_requested_by_request_url = sprintf($this->api_urls['user_requested_by'], $this->access_token);
+        
+        return $this->__apiCall($user_requested_by_request_url);
+        
     }
     
     /*
@@ -275,25 +275,25 @@ class Instagram_api {
      * @return std_class user's relationship to another user
      */
     function userRelationship($user_id) {
-    	
-    	$user_relationship_request_url = sprintf($this->api_urls['user_relationship'], $user_id, $this->access_token);
-    	
-    	return $this->__apiCall($user_relationship_request_url);
-    	
+        
+        $user_relationship_request_url = sprintf($this->api_urls['user_relationship'], $user_id, $this->access_token);
+        
+        return $this->__apiCall($user_relationship_request_url);
+        
     }
     
-	/*
+    /*
      * Function to modify the relationship between the current user and the target user
      * @param int Instagram user id
      * @param string action to effect relatonship (follow/unfollow/block/unblock/approve/deny)
      * @return std_class result of request
      */
     function modifyUserRelationship($user_id, $action) {
-    	
-    	$user_modify_relationship_request_url = sprintf($this->api_urls['modify_user_relationship'], $user_id, $this->access_token);
-    	
-    	return $this->__apiCall($user_modify_relationship_request_url, array("action" => $action));
-    	
+        
+        $user_modify_relationship_request_url = sprintf($this->api_urls['modify_user_relationship'], $user_id, $this->access_token);
+        
+        return $this->__apiCall($user_modify_relationship_request_url, array("action" => $action));
+        
     }
     
     /*
@@ -303,11 +303,11 @@ class Instagram_api {
      * @return std_class data about the media item
      */
     function getMedia($media_id) {
-    	
-    	$media_request_url = sprintf($this->api_urls['media'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($media_request_url);
-    	
+        
+        $media_request_url = sprintf($this->api_urls['media'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($media_request_url);
+        
     }
     
     /*
@@ -321,11 +321,11 @@ class Instagram_api {
      * @return std_class media items found in search
      */
     function mediaSearch($latitude = null, $longitude = null, $max_timestamp = null, $min_timestamp = null, $distance = null) {
-    	
-    	$media_search_request_url = sprintf($this->api_urls['media_search'], $latitude, $longitude, $max_timestamp, $min_timestamp, $distance, $this->access_token);
-    	
-    	return $this->__apiCall($media_search_request_url);
-    	
+        
+        $media_search_request_url = sprintf($this->api_urls['media_search'], $latitude, $longitude, $max_timestamp, $min_timestamp, $distance, $this->access_token);
+        
+        return $this->__apiCall($media_search_request_url);
+        
     }
     
     /*
@@ -333,11 +333,11 @@ class Instagram_api {
      * @return std_class popular media
      */
     function popularMedia() {
-    	
-    	$popular_media_request_url = sprintf($this->api_urls['media_popular'], $this->access_token);
-    	
-    	return $this->__apiCall($popular_media_request_url);
-    	
+        
+        $popular_media_request_url = sprintf($this->api_urls['media_popular'], $this->access_token);
+        
+        return $this->__apiCall($popular_media_request_url);
+        
     }
     
     /*
@@ -347,9 +347,9 @@ class Instagram_api {
      */
     function mediaComments($media_id) {
     
-    	$media_comments_request_url = sprintf($this->api_urls['media_comments'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($media_comments_request_url);
+        $media_comments_request_url = sprintf($this->api_urls['media_comments'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($media_comments_request_url);
     
     }
     
@@ -361,9 +361,9 @@ class Instagram_api {
      */
     function postMediaComment($media_id, $comment) {
     
-    	$post_media_comment_url = sprintf($this->api_urls['post_media_comment'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($post_media_comment_url, array('text' => $comment));    	
+        $post_media_comment_url = sprintf($this->api_urls['post_media_comment'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($post_media_comment_url, array('text' => $comment));        
     
     }
     
@@ -375,9 +375,9 @@ class Instagram_api {
      */
     function deleteMediaComment($media_id, $comment_id) {
     
-    	$delete_media_comment_url = sprintf($this->api_urls['delete_media_comment'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($delete_media_comment_url);
+        $delete_media_comment_url = sprintf($this->api_urls['delete_media_comment'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($delete_media_comment_url);
     
     }
     
@@ -388,9 +388,9 @@ class Instagram_api {
      */
     function mediaLikes($media_id) {
     
-    	$media_likes_request_url = sprintf($this->api_urls['likes'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($media_likes_request_url);
+        $media_likes_request_url = sprintf($this->api_urls['likes'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($media_likes_request_url);
     
     }
     
@@ -402,22 +402,22 @@ class Instagram_api {
     function postLike($media_id) {
     
         $post_media_like_request_url = sprintf($this->api_urls['post_like'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($post_media_like_request_url, TRUE);
+        
+        return $this->__apiCall($post_media_like_request_url, TRUE);
     
     }
 
-	/*
-	 * Function to remove a like for a media item
-	 * @param int media id
-	 * @return std_class response to request
-	 */
+    /*
+     * Function to remove a like for a media item
+     * @param int media id
+     * @return std_class response to request
+     */
     function removeLike($media_id) {
     
-    	$remove_like_request_url = sprintf($this->api_urls['remove_like'], $media_id, $this->access_token);
-    	
-    	return $this->__apiCall($remove_like_request_url);
-    	
+        $remove_like_request_url = sprintf($this->api_urls['remove_like'], $media_id, $this->access_token);
+        
+        return $this->__apiCall($remove_like_request_url);
+        
     }
     
     /*
@@ -427,9 +427,9 @@ class Instagram_api {
      */
     function getTags($tag) {
     
-    	$tags_request_url = sprintf($this->api_urls['tags'], $tag, $this->access_token);
-    	
-    	return $this->__apiCall($tags_request_url);
+        $tags_request_url = sprintf($this->api_urls['tags'], $tag, $this->access_token);
+        
+        return $this->__apiCall($tags_request_url);
     
     }
     
@@ -442,22 +442,22 @@ class Instagram_api {
      */
     function tagsRecent($tag, $max_id = null, $min_id = null) {
     
-    	$tags_recent_request_url = sprintf($this->api_urls['tags_recent'], $tag, $max_id, $min_id, $this->access_token);
-    	
-    	return $this->__apiCall($tags_recent_request_url);
+        $tags_recent_request_url = sprintf($this->api_urls['tags_recent'], $tag, $max_id, $min_id, $this->access_token);
+        
+        return $this->__apiCall($tags_recent_request_url);
     
     }
     
-	/*
+    /*
      * Function to search for tagged media
      * @param string valid tag name without a leading #. (eg. snow, nofilter)
      * @return std_class tags by name - results are ordered first as an exact match, then by popularity
      */
     function tagsSearch($tag) {
     
-    	$tags_search_request_url = sprintf($this->api_urls['tags_search'], $tag, $this->access_token);
-    	
-    	return $this->__apiCall($tags_search_request_url);
+        $tags_search_request_url = sprintf($this->api_urls['tags_search'], $tag, $this->access_token);
+        
+        return $this->__apiCall($tags_search_request_url);
     
     }
     
@@ -468,9 +468,9 @@ class Instagram_api {
      */
     function getLocation($location) {
     
-    	$location_request_url = sprintf($this->api_urls['locations'], $location, $this->access_token);
-    	
-    	return $this->__apiCall($location_request_url);
+        $location_request_url = sprintf($this->api_urls['locations'], $location, $this->access_token);
+        
+        return $this->__apiCall($location_request_url);
     
     }
     
@@ -485,9 +485,9 @@ class Instagram_api {
      */
     function locationRecent($location, $max_id = null, $min_id = null, $max_timestamp = null, $min_timestamp = null) {
     
-    	$location_recent_request_url = sprintf($this->api_urls['locations_recent'], $location, $max_id, $min_id, $max_timestamp, $min_timestamp, $this->access_token);
-    	
-    	return $this->__apiCall($location_recent_request_url);
+        $location_recent_request_url = sprintf($this->api_urls['locations_recent'], $location, $max_id, $min_id, $max_timestamp, $min_timestamp, $this->access_token);
+        
+        return $this->__apiCall($location_recent_request_url);
     
     }
     
@@ -501,9 +501,9 @@ class Instagram_api {
      */
     function locationSearch($latitude = null, $longitude = null, $foursquare_id = null, $distance = null) {
     
-    	$location_search_request_url = sprintf($this->api_urls['locations_search'], $latitude, $longitude, $foursquare_id, $distance, $this->access_token);
-    	
-    	return $this->__apiCall($location_search_request_url);
+        $location_search_request_url = sprintf($this->api_urls['locations_search'], $latitude, $longitude, $foursquare_id, $distance, $this->access_token);
+        
+        return $this->__apiCall($location_search_request_url);
     
     }
 
@@ -514,11 +514,13 @@ class Instagram_api {
      */
     function getMediaByURL($url) {
     
-        $get_media_by_url_request_url = sprintf($this->api_urls['get_media_by_url'], $url);
+        $media_by_url_request_url = sprintf($this->api_urls['media_by_url'], $url);
         
-        $media = $this->__apiCall($get_media_by_url_request_url);
+        $media = $this->__apiCall($media_by_url_request_url);
         
-        return $this->getMedia($media->media_id);
+        if (isset($media->media_id))
+            return $this->getMedia($media->media_id);
+        return FALSE;
     }
 
 }

@@ -40,6 +40,8 @@
 
 $route['default_controller'] = "home";
 $route['404_override'] = '';
+$route['oauth'] = 'user/code';
+$route['logout'] = 'user/logout';
 
 
 /* End of file routes.php */

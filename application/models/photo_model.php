@@ -6,7 +6,7 @@ class Photo_model extends CI_Model {
 	{
 		// check for photo in database; if not found, add it
 		$query = $this->db->get_where('photos', ['id' => $id]);
-		if ($query->num_rows == 0)
+		if ($query->num_rows() == 0)
 		{
 			$response = $this->instagram_api->getMedia($id);
 
@@ -49,10 +49,38 @@ class Photo_model extends CI_Model {
 
 	public function get_photos($limit = 30, $before_date = NULL)
 	{
-		if (isset($before_id))
+		if (isset($before_date))
 			$this->db->where('date_added <', $before_date);
 		$this->db->order_by('date_added', 'desc');
 		return $this->db->get('photos', $limit);
+	}
+
+	public function get_photos_by_tags($tag_list)
+	{
+		$photos = [];
+		foreach ($tag_list as $tag) 
+		{
+			$response = $this->instagram_api->tagsRecent($tag['tag'], NULL, $tag['min_id']);
+			$photos = array_merge($photos, $response->data);
+		}
+		unset($tag);
+
+		// remove duplicates
+		$temp_array = [];
+		foreach ($photos as &$photo) 
+		{
+			$temp_array[$photo->id] = $photo;
+			unset($photo);
+		}
+		$photos = array_values($temp_array);
+		unset($temp_array);		
+
+		// sort array by created_time, newest first
+		usort($photos, function($a, $b) {
+		    return $b->created_time - $a->created_time;
+		});
+		
+		return $photos;
 	}
 
 	public function delete_photo($id)

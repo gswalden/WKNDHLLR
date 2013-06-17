@@ -5,7 +5,7 @@ class User_model extends CI_Model {
 	public function add_user($user)
 	{
 		$query = $this->db->get_where('users', ['id' => $user->id]);
-		if ($query->num_rows > 0)
+		if ($query->num_rows() > 0)
 		{
 			if ($this->db->update('users', ['access_token' => $user->access_token], ['id' => $user->id]));
 				return ['bool' => TRUE, 'message' => 'User token updated!'];
