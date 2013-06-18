@@ -1,10 +1,25 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH . "libraries/REST_Controller.php";
+require_once APPPATH . 'libraries/REST_Controller.php';
 
 class Photo extends REST_Controller {
 
-	public function see_get($id)
+	public function __construct()
+	{
+		// remove in production
+		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
+		
+		parent::__construct();
+	}
+
+	/**
+	 * Get Photo
+	 *
+	 * Returns database row for specified photo.
+	 * 
+	 * @param  string $id Instagram-assigned media_id
+	 */
+	public function get_photo_get($id)
 	{
 		$this->load->model('Photo_model');
 		$query = $this->Photo_model->get_photo($id);
@@ -20,9 +35,14 @@ class Photo extends REST_Controller {
 		}
 	}
 
+	/**
+	 * Tags
+	 *
+	 * Returns photos with given tag(s) from Instagram, sorted by date and duplicates removed
+	 * 
+	 */
 	public function tags_post()
 	{
-		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
 		$post = $this->input->post();
 		if ($post)
 		{
@@ -44,14 +64,14 @@ class Photo extends REST_Controller {
 							'message' => 'Tags Not Found!'	]);
 	}
 
-	public function suggest_get()
-	{
-		$this->response(['msg' => 'yes!']);
-	}
-
+	/**
+	 * Suggest
+	 *
+	 * Validates and adds suggested photo to database.
+	 * 
+	 */
 	public function suggest_post()
 	{
-		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
 		$input_url = $this->input->post('url');
 		if (preg_match('/^.*((instagram.com|instagr.am)\/p\/[\w-]+\/?)$/i', trim($input_url), $result))
 		{
@@ -67,7 +87,6 @@ class Photo extends REST_Controller {
 				}
 				$this->_send_response(['code' => 500, 
 									'message' => $add['message']]);
-				// return ['bool' => FALSE, 'message' => 'Photo Not Added!'];		
 			}
 			else
 			{
@@ -75,14 +94,16 @@ class Photo extends REST_Controller {
 				send_error_mail(__METHOD__, $response->meta->code, $response->meta->error_type, $response->meta->error_message);
 				$this->_send_response(['code' => $response->meta->code, 
 									'message' => $response->meta->error_message]);
-				// return ['bool' => FALSE, 'message' => 'Error from Instagram API!'];
 			}
 		}
 		$this->_send_response(['code' => 404, 
 							'message' => 'Invalid Instagram URL.']);
-		// return ['bool' => FALSE, 'message' => 'Invalid Instagram URL.'];
 	}
 
+	/**
+	 * Send Response
+	 * @param array $data
+	 */
 	private function _send_response($data = NULL)
 	{
 		if ($data)

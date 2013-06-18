@@ -2,6 +2,13 @@
 
 class Photo_model extends CI_Model {
 
+	/**
+	 * Add Photo
+	 *
+	 * Adds single photo to database.
+	 * 
+	 * @param string $id
+	 */
 	public function add_photo($id)
 	{
 		// check for photo in database; if not found, add it
@@ -23,7 +30,6 @@ class Photo_model extends CI_Model {
 			else
 			{
 				$this->load->helper('send_error_mail');
-				var_dump($response);
 				send_error_mail(__METHOD__, $response->meta->code, $response->meta->error_type, $response->meta->error_message);
 				return ['bool' => FALSE, 'message' => 'Error from Instagram API!'];
 			}
