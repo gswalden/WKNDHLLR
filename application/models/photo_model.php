@@ -64,7 +64,6 @@ class Photo_model extends CI_Model {
 			$response = $this->instagram_api->tagsRecent($tag['tag'], $tag['max_id']);
 			if ($response->meta->code == 200)
 			{
-				// var_dump($response->pagination);
 				$pagination[$tag['tag']] = $response->pagination->next_max_tag_id;
 				$photos = array_merge($photos, $response->data);	
 			}
