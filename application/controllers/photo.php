@@ -43,7 +43,7 @@ class Photo extends REST_Controller {
 	 */
 	public function tags_post()
 	{
-		$post = $this->input->post();
+		$post = $this->post();
 		if ($post)
 		{
 			foreach ($post as $key => $value) 
@@ -64,6 +64,28 @@ class Photo extends REST_Controller {
 							'message' => 'Tags Not Found!'	]);
 	}
 
+	public function approve_suggestion_post()
+	{
+		$this->post('id');
+		$this->load->model('Photo_model');
+		if ($this->Photo_model->approve_suggested_photo($id))
+			$this->_send_response(['code' => 200,
+								'message' => 'Photo Approved!'	]);
+		$this->_send_response(['code' => 404,
+							'message' => 'Photo Not Found!'	]);
+	}
+
+	public function remove_suggestion_post()
+	{
+		$this->post('id');
+		$this->load->model('Photo_model');
+		if ($this->Photo_model->remove_suggested_photo($id))
+			$this->_send_response(['code' => 200,
+								'message' => 'Photo Removed!'	]);
+		$this->_send_response(['code' => 404,
+							'message' => 'Photo Not Removed!'	]);	
+	}
+
 	/**
 	 * Suggest
 	 *
@@ -72,7 +94,7 @@ class Photo extends REST_Controller {
 	 */
 	public function suggest_post()
 	{
-		$input_url = $this->input->post('url');
+		$input_url = $this->post('url');
 		if (preg_match('/^.*((instagram.com|instagr.am)\/p\/[\w-]+\/?)$/i', trim($input_url), $result))
 		{
 			$response = $this->instagram_api->getMediaByURL($result[1]);
@@ -102,7 +124,10 @@ class Photo extends REST_Controller {
 
 	/**
 	 * Send Response
-	 * @param array $data
+	 *
+	 * Sends RESTful response.
+	 * 
+	 * @param array $data Contains array of objects for JSON response and response code
 	 */
 	private function _send_response($data = NULL)
 	{

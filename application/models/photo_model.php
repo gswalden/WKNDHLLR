@@ -7,7 +7,8 @@ class Photo_model extends CI_Model {
 	 *
 	 * Adds single photo to database.
 	 * 
-	 * @param string $id
+	 * @param string $id Instagram-assigned media_id
+	 * @return array     Contains bool and string status message
 	 */
 	public function add_photo($id)
 	{
@@ -37,7 +38,14 @@ class Photo_model extends CI_Model {
 
 		return ['bool' => FALSE, 'message' => 'Photo already exists!'];
 	}
-
+	/**
+	 * Add Suggested Photo
+	 *
+	 * Adds single photo to suggested_photos table.
+	 * 
+	 * @param stdClass $photo Response object from Instagram API call
+	 * @return array          Contains bool and string status message
+	 */
 	public function add_suggested_photo($photo)
 	{
 		$photo = $this->_make_photo_array($photo);
@@ -49,11 +57,51 @@ class Photo_model extends CI_Model {
 		return ['bool' => FALSE, 'message' => 'Database error in' . __METHOD__ . ': Number: ' . $this->db->_error_number() . '; Message: ' . $this->db->_error_message()];
 	}
 
+	public function approve_suggested_photo($id)
+	{
+		$this->db->trans_start();
+
+		$query = $this->db->get_where('suggested_photos', ['id' => $id]);
+		if ($query->num_rows() > 0)
+		{
+			$row = $query->row();
+			unset($row->created_date, $row->added_by);
+			$this->db->insert('photos', $row);
+			$this->db->delete('suggested_photos', ['id' => $id]);
+		}
+
+		$this->db->trans_complete();
+		if ($this->db->trans_status() === FALSE)
+			return FALSE;
+		return TRUE;
+	}
+
+	public function remove_suggested_photo($id)
+	{
+		if ($this->db->delete('suggested_photos', ['id' => $id]))
+			return TRUE;
+		return FALSE;
+	}
+
+	/**
+	 * Get Photo
+	 *
+	 * Returns single photo row from database.
+	 * 
+	 * @param  string $id Instagram-assigned media_id
+	 * @return stdClass   Database result object
+	 */
 	public function get_photo($id)
 	{
 		return $this->db->get_where('photos', ['id' => $id]);
 	}
 
+	/**
+	 * Get Photos
+	 * @param  integer $limit       Number of photos to return
+	 * @param  string  $before_date Exclude dates including and later
+	 * @return stdClass             Database result object
+	 */
 	public function get_photos($limit = 30, $before_date = NULL)
 	{
 		if (isset($before_date))
@@ -62,6 +110,13 @@ class Photo_model extends CI_Model {
 		return $this->db->get('photos', $limit);
 	}
 
+	/**
+	 * Get Photos by Tags
+	 *
+	 * Gets a set of photos for each tag from Instagram, removes duplicates, and sorts by date (newest first).
+	 * @param  array $tag_list Each element an array include tag name and optional max_id
+	 * @return array           Array including array of photos and array of paginiation information for each tag
+	 */
 	public function get_photos_by_tags($tag_list)
 	{
 		$photos = [];
@@ -94,6 +149,14 @@ class Photo_model extends CI_Model {
 		return ['photos' => $photos, 'pagination' => $pagination];
 	}
 
+	/**
+	 * Delete Photo
+	 *
+	 * Deletes single photo from database
+	 * 
+	 * @param  string $id Instagram-assigned media_id
+	 * @return boolean    Indicates success or failure
+	 */
 	public function delete_photo($id)
 	{
 		if ($this->db->delete('photos', ['id' => $id]))
@@ -101,6 +164,14 @@ class Photo_model extends CI_Model {
 		return FALSE;
 	}
 
+	/**
+	 * Make Photo Array
+	 *
+	 * Formats photo information for insertion into database
+	 * 
+	 * @param  stdClass $photo Object from Instagram API call
+	 * @return array           Properly formatted for insertion into photos database
+	 */
 	protected function _make_photo_array($photo)
 	{
 		return ['id' => $photo->data->id,
