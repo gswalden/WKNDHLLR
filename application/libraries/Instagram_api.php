@@ -75,10 +75,6 @@ class Instagram_api {
         
         // Load the Instagram API language file
         $this->codeigniter_instance->load->config('Instagram_api');
-
-        // Set access token during development
-        $this->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
-    
     } 
     
     /*

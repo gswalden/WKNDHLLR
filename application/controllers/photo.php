@@ -4,11 +4,6 @@ require_once APPPATH . "libraries/REST_Controller.php";
 
 class Photo extends REST_Controller {
 
-	public function index_get()
-	{
-		redirect('/');
-	}
-
 	public function see_get($id)
 	{
 		$this->load->model('Photo_model');
@@ -25,13 +20,20 @@ class Photo extends REST_Controller {
 		}
 	}
 
-	public function tags_get()
+	public function tags_post()
 	{
-		$get = $this->input->get();
-		if ($get)
+		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
+		$post = $this->input->post();
+		if ($post)
 		{
+			foreach ($post as $key => $value) 
+			{
+				$tags[] = ['tag' => $key, 'max_id' => $value];
+			}
 			$this->load->model('Photo_model');
 			$data['data'] = $this->Photo_model->get_photos_by_tags($tags);
+			$data['pagination'] = $data['data']['pagination'];
+			$data['data'] = $data['data']['photos'];
 			if ($data['data'])
 			{
 				$data['code'] = 200;
@@ -39,11 +41,18 @@ class Photo extends REST_Controller {
 			}
 		}
 		$this->_send_response(['code' => 404,
-							'message' => 'Photo Not Found!'	]);
+							'message' => 'Tags Not Found!'	]);
 	}
 
-	public function suggest_post($input_url)
+	public function suggest_get()
 	{
+		$this->response(['msg' => 'yes!']);
+	}
+
+	public function suggest_post()
+	{
+		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
+		$input_url = $this->input->post('url');
 		if (preg_match('/^.*((instagram.com|instagr.am)\/p\/[\w-]+\/?)$/i', trim($input_url), $result))
 		{
 			$response = $this->instagram_api->getMediaByURL($result[1]);

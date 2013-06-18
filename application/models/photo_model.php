@@ -23,6 +23,7 @@ class Photo_model extends CI_Model {
 			else
 			{
 				$this->load->helper('send_error_mail');
+				var_dump($response);
 				send_error_mail(__METHOD__, $response->meta->code, $response->meta->error_type, $response->meta->error_message);
 				return ['bool' => FALSE, 'message' => 'Error from Instagram API!'];
 			}
@@ -33,7 +34,7 @@ class Photo_model extends CI_Model {
 
 	public function add_suggested_photo($photo)
 	{
-		$photo = _make_photo_array($photo);
+		$photo = $this->_make_photo_array($photo);
 
 		// inserts data and returns result
 		if ($this->db->insert('suggested_photos', $photo))
@@ -60,8 +61,13 @@ class Photo_model extends CI_Model {
 		$photos = [];
 		foreach ($tag_list as $tag) 
 		{
-			$response = $this->instagram_api->tagsRecent($tag['tag'], NULL, $tag['min_id']);
-			$photos = array_merge($photos, $response->data);
+			$response = $this->instagram_api->tagsRecent($tag['tag'], $tag['max_id']);
+			if ($response->meta->code == 200)
+			{
+				// var_dump($response->pagination);
+				$pagination[$tag['tag']] = $response->pagination->next_max_tag_id;
+				$photos = array_merge($photos, $response->data);	
+			}
 		}
 		unset($tag);
 
@@ -80,7 +86,7 @@ class Photo_model extends CI_Model {
 		    return $b->created_time - $a->created_time;
 		});
 		
-		return $photos;
+		return ['photos' => $photos, 'pagination' => $pagination];
 	}
 
 	public function delete_photo($id)
