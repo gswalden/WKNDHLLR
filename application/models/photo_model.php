@@ -38,6 +38,7 @@ class Photo_model extends CI_Model {
 
 		return ['bool' => FALSE, 'message' => 'Photo already exists!'];
 	}
+	
 	/**
 	 * Add Suggested Photo
 	 *
@@ -114,6 +115,9 @@ class Photo_model extends CI_Model {
 
 	/**
 	 * Get Photos
+	 *
+	 * Returns database result object containing photos.
+	 * 
 	 * @param  integer $limit       Number of photos to return
 	 * @param  string  $before_date Exclude dates including and later
 	 * @return stdClass             Database result object
@@ -130,6 +134,7 @@ class Photo_model extends CI_Model {
 	 * Get Photos by Tags
 	 *
 	 * Gets a set of photos for each tag from Instagram, removes duplicates, and sorts by date (newest first).
+	 * 
 	 * @param  array $tag_list Each element an array include tag name and optional max_id
 	 * @return array           Array including array of photos and array of paginiation information for each tag
 	 */
@@ -168,7 +173,7 @@ class Photo_model extends CI_Model {
 	/**
 	 * Delete Photo
 	 *
-	 * Deletes single photo from database
+	 * Deletes single photo from database.
 	 * 
 	 * @param  string $id Instagram-assigned media_id
 	 * @return boolean    Indicates success or failure
