@@ -6,10 +6,10 @@ class Photo extends REST_Controller {
 
 	public function __construct()
 	{
+		parent::__construct();
+
 		// remove in production
 		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
-		
-		parent::__construct();
 	}
 
 	/**
@@ -59,6 +59,18 @@ class Photo extends REST_Controller {
 							'message' => 'No Photos Found!'	]);
 	}
 
+	public function add_photo_post()
+	{
+		$id = $this->post('id');
+		$this->load->model('Photo_model');
+		$add = $this->Photo_model->add_photo($id);
+		if ($add['bool'])
+			$this->_send_response(['code' => 200,
+								'message' => $add['message']	]);
+		$this->_send_response(['code' => 404,
+							'message' => $add['message']	]);
+	}
+
 	/**
 	 * Delete Photo
 	 *
@@ -71,10 +83,8 @@ class Photo extends REST_Controller {
 		$id = $this->post('id');
 		$this->load->model('Photo_model');
 		if ($this->Photo_model->delete_photo($id))
-		{
 			$this->_send_response([ 'code' => 200, 
 									'message' => 'Photo Deleted!'	]); 
-		}
 		$this->_send_response(['code' => 404,
 							'message' => 'Photo Not Found!'	]);
 	}

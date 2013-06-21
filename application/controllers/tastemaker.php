@@ -37,16 +37,4 @@ class Tastemaker extends CI_Controller {
 		
 		$this->load->view('basic', $data);
 	}
-
-	public function add($id)
-	{
-		$this->load->model('Photo_model');
-		$add = $this->Photo_model->add_photo($id);
-		if ($add['bool'])
-			$this->session->set_flashdata('add_photo', 'Photo Added!');
-		else
-			$this->session->set_flashdata('add_photo', 'Photo Not Added!' . $add['message']);
-		
-		redirect('/tastemaker');
-	}
 }

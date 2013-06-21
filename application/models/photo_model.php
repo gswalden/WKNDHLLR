@@ -13,8 +13,10 @@ class Photo_model extends CI_Model {
 	public function add_photo($id)
 	{
 		// check for photo in database; if not found, add it
-		$query = $this->db->get_where('photos', ['id' => $id]);
-		if ($query->num_rows() == 0)
+		$query = $this->db->get_where('active_photos', ['id' => $id]);
+		if ($this->_is_photo_in_db($id))
+			return ['bool' => FALSE, 'message' => 'Photo already exists!'];
+		else
 		{
 			$response = $this->instagram_api->getMedia($id);
 
@@ -23,7 +25,7 @@ class Photo_model extends CI_Model {
 				$photo = $this->_make_photo_array($response);
 
 				// inserts data and returns result
-				if ($this->db->insert('photos', $photo))
+				if ($this->db->insert('active_photos', $photo))
 					return ['bool' => TRUE, 'message' => 'Photo successfully inserted!'];
 				
 				return ['bool' => FALSE, 'message' => 'Database error in' . __METHOD__ . ': Number: ' . $this->db->_error_number() . '; Message: ' . $this->db->_error_message()];
@@ -35,8 +37,6 @@ class Photo_model extends CI_Model {
 				return ['bool' => FALSE, 'message' => 'Error from Instagram API!'];
 			}
 		}
-
-		return ['bool' => FALSE, 'message' => 'Photo already exists!'];
 	}
 	
 	/**
@@ -49,6 +49,9 @@ class Photo_model extends CI_Model {
 	 */
 	public function add_suggested_photo($photo)
 	{
+		if ($this->_is_photo_in_db($photo->data->id))
+			return ['bool' => FALSE, 'message' => 'Photo already exists!'];
+
 		$photo = $this->_make_photo_array($photo);
 
 		// inserts data and returns result
@@ -68,6 +71,9 @@ class Photo_model extends CI_Model {
 	 */
 	public function approve_suggested_photo($id)
 	{
+		if ($this->_is_photo_in_db($id))
+			return FALSE;
+
 		$this->db->trans_start();
 
 		$query = $this->db->get_where('suggested_photos', ['id' => $id]);
@@ -75,7 +81,7 @@ class Photo_model extends CI_Model {
 		{
 			$row = $query->row();
 			unset($row->created_date, $row->added_by);
-			$this->db->insert('photos', $row);
+			$this->db->insert('active_photos', $row);
 			$this->db->delete('suggested_photos', ['id' => $id]);
 		}
 
@@ -110,7 +116,7 @@ class Photo_model extends CI_Model {
 	 */
 	public function get_photo($id)
 	{
-		return $this->db->get_where('photos', ['id' => $id]);
+		return $this->db->get_where('active_photos', ['id' => $id]);
 	}
 
 	/**
@@ -127,7 +133,7 @@ class Photo_model extends CI_Model {
 		if (isset($before_date))
 			$this->db->where('date_added <', $before_date);
 		$this->db->order_by('date_added', 'desc');
-		return $this->db->get('photos', $limit);
+		return $this->db->get('active_photos', $limit);
 	}
 
 	/**
@@ -180,7 +186,7 @@ class Photo_model extends CI_Model {
 	 */
 	public function delete_photo($id)
 	{
-		if ($this->db->delete('photos', ['id' => $id]))
+		if ($this->db->delete('active_photos', ['id' => $id]))
 			return TRUE;
 		return FALSE;
 	}
@@ -204,5 +210,28 @@ class Photo_model extends CI_Model {
 				'url' => $photo->data->link,
 				'added_by' => '387621951'
 				];
+	}
+
+	/**
+	 * Is Photo In Database?
+	 *
+	 * Searches all photo databases for photo's id.
+	 * 
+	 * @param  string  $id         Instagram-assigned media_id
+	 * @param  string  $exclude_db Database to exclude from search
+	 * @return boolean             TRUE if it already exists
+	 */
+	protected function _is_photo_in_db($id, $exclude_db = NULL)
+	{
+		$db_list = ['active_photos', 'photo_queue', 'suggested_photos'];
+		if ($exclude_db && ($key = array_search($exclude_db, $db_list)) !== FALSE)
+			unset($db_list[$key]);
+		foreach ($db_list as $db) 
+		{
+			$query = $this->db->get_where($db, ['id' => $id]);
+			if ($query->num_rows() > 0)
+				return TRUE;
+		}
+		return FALSE;
 	}	
 }

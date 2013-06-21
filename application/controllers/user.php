@@ -4,10 +4,10 @@ class User extends CI_Controller {
 
 	public function __construct()
 	{
+		parent::__construct();
+
 		// remove in production
 		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
-		
-		parent::__construct();
 	}
 
 	public function index()
@@ -15,6 +15,12 @@ class User extends CI_Controller {
 		redirect('/');
 	}
 
+	/**
+	 * Code
+	 *
+	 * Callback function after logging in with Instagram.
+	 * 
+	 */
 	public function code()
 	{
 		$get = $this->get('code');
@@ -47,6 +53,12 @@ class User extends CI_Controller {
 			redirect('/');
 	}
 
+	/**
+	 * Logout
+	 *
+	 * Logs out user.
+	 * 
+	 */
 	public function logout()
 	{
 		$this->session->sess_destroy();

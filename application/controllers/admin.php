@@ -5,11 +5,11 @@ require_once APPPATH . 'libraries/REST_Controller.php';
 class Admin extends REST_Controller {
 
 	public function __construct()
-	{
+	{	
+		parent::__construct();
+
 		// remove in production
 		$this->instagram_api->access_token = '387621951.14ddff3.4690ea24f5444c0fab9b0722b2c569c3';
-		
-		parent::__construct();
 	}
 
 	/**

@@ -18,9 +18,7 @@
 		echo '<a href="' . $photo->link . '">'; 
         echo '<img src="' . $photo->images->low_resolution->url . '" alt="" />';
         echo '</a>';
-        echo '<form method="post" action="/wkndhllr/index.php/tastemaker/add/'. $photo->id .'">';
-        echo '<button type="submit">Add</button>';
-        echo '</button></form>';
+        echo '<button class="add_photo" id="' . $photo->id . '">Add</button>';
         echo '</div>';
 	} 
 	?>
@@ -32,9 +30,6 @@
 	<div id="success"></div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script>
-	
-	</script>
-	<script>
 		$(document).ready(function() {
 			var tags = {
 				<?php 
@@ -45,6 +40,7 @@
 				?>
 			};
 			$('#load_more').click(function() {
+				$(this).hide();
 				$.ajax({
 				    type: 'POST',
 				    url: 'http://localhost/wkndhllr/index.php/photo/tags/',
@@ -53,8 +49,26 @@
 				    success: function(response) {
 				      	tags = response.pagination;
 				      	$.each(response.data, function() {
-				      		$('#load_more').before('<div style="float: left"><a href="'+this.link+'"><img src="'+this.images.low_resolution.url+'" alt=""></a><form method="post" action="/wkndhllr/index.php/tastemaker/add/'+this.id+'"><button type="submit">Add</button></form></div>');
+				      		$('#load_more').before('<div style="float: left"><a href="'+this.link+'"><img src="'+this.images.low_resolution.url+'" alt=""></a><button class="add_photo" id="'+this.id+'">Add</button></div>');
 				      	});
+				      	$('#load_more').show();
+						return true;
+				    },
+				    error: function() {
+						return false;
+				    }
+				});
+			});
+
+			$(document).on('click', '.add_photo', function() {
+				$.ajax({
+				    type: 'POST',
+				    url: 'http://localhost/wkndhllr/index.php/photo/add_photo/',
+				    data: 'id='+this.id,
+				    dataType: "json",
+				    success: function(response) {
+				    	$('#success').show();
+				    	$('#success').html(response.message).fadeOut(3500);
 						return true;
 				    },
 				    error: function() {
@@ -69,11 +83,14 @@
 				match = /^.*((instagram.com|instagr.am)\/p\/[\w-]+\/?)$/i.exec($.trim($('#suggest_input').val()));
 				if (match)
 				{
-					$('#suggest').prop('disabled', false);
+					$('#suggest_submit').prop('disabled', false);
 				}
 				else
-					$('#suggest').prop('disabled', true);
+				{
+					$('#suggest_submit').prop('disabled', true);					
+				}
 			});
+			
 			$('#instagram').submit(function() {
 				if (match != null)
 				{
@@ -102,8 +119,6 @@
 				$("#box").focus();
 				$('#success').show();
 				$('#success').html('Invalid URL!').fadeOut(3500);
-				
-				
 				return false;
 			});
 		});
