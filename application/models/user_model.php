@@ -41,7 +41,7 @@ class User_model extends CI_Model {
 	 */
 	public function get_users($access_level = NULL, $include_higher = TRUE) 
 	{
-		if (isset($access_level))
+		if ( ! empty($access_level))
 		{
 			if ($include_higher)
 				$this->db->where('access_level >=', $access_level);

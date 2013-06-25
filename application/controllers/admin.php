@@ -21,12 +21,15 @@ class Admin extends REST_Controller {
 	public function user_get()
 	{
 		$id = $this->get('id');
-		$this->load->model('User_model');
-		$query = $this->User_model->get_user($id);
-		if ($query->num_rows() > 0)
+		if ( ! empty($id))
 		{
-			$this->_send_response([ 'code' => 200, 
-									'data' => $query->row()	]); 
+			$this->load->model('User_model');
+			$query = $this->User_model->get_user($id);
+			if ($query->num_rows() > 0)
+			{
+				$this->_send_response([ 'code' => 200, 
+										'data' => $query->row()	]); 
+			}
 		}
 		$this->_send_response(['code' => 404,
 							'message' => 'User Not Found!'	]);
@@ -40,8 +43,12 @@ class Admin extends REST_Controller {
 	public function users_get()
 	{
 		$get = $this->get();
+		if ( ! is_numeric($get['access_level']))
+			$get['access_level'] = NULL;
+		if ( ! $get['include_higher'] !== FALSE) // test != vs !==
+			$get['include_higher'] = TRUE;
 		$this->load->model('User_model');
-		$query = $this->User_model->get_users($get['access_level']);
+		$query = $this->User_model->get_users($get['access_level'], $get['include_higher']);
 		if ($query->num_rows() > 0)
 		{
 			$this->_send_response([ 'code' => 200, 
@@ -60,11 +67,14 @@ class Admin extends REST_Controller {
 	public function delete_user_post()
 	{
 		$id = $this->post('id');
-		$this->load->model('User_model');
-		if ($this->User_model->delete_user($id))
+		if ( ! empty($id))
 		{
-			$this->_send_response(['code' => 200, 
-								'message' => 'User Deleted!'	]); 
+			$this->load->model('User_model');
+			if ($this->User_model->delete_user($id))
+			{
+				$this->_send_response(['code' => 200, 
+									'message' => 'User Deleted!'	]); 
+			}	
 		}
 		$this->_send_response(['code' => 404,
 							'message' => 'User Not Found!'	]);
